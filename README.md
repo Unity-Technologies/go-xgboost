@@ -2,6 +2,8 @@
 
 # go-xgboost
 
+Go bindings for [XGBoost](https://github.com/dmlc/xgboost)
+
 ```go
 import "github.com/Applifier/go-xgboost"
 ```
