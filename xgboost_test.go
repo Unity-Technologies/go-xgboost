@@ -1,6 +1,7 @@
 package xgboost
 
 import (
+	"math"
 	"testing"
 )
 
@@ -55,15 +56,14 @@ func TestXGBoost(t *testing.T) {
 		noErr(booster.UpdateOneIter(iter, matrix))
 	}
 
-	testrows := 7
-	testData := make([]float32, cols*testrows)
-	for i := 0; i < testrows; i++ {
+	testData := make([]float32, cols*rows)
+	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 			testData[(i*cols)+j] = float32((i + 1) * (j + 1))
 		}
 	}
 
-	testmat, err := XGDMatrixCreateFromMat(testData, testrows, cols, -1)
+	testmat, err := XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -73,9 +73,14 @@ func TestXGBoost(t *testing.T) {
 		t.Error(err)
 	}
 
-	for i := 0; i < len(res)-1; i++ {
-		if res[i] > res[i+1] {
-			t.Error("results should be ascending")
-		}
+	// TODO measure actual accuracy
+	totalDiff := 0.0
+	for i, label := range trainLabels {
+		diff := math.Abs(float64(label - res[i]))
+		totalDiff += diff
+	}
+
+	if totalDiff > 6.0 {
+		t.Error("error is too large")
 	}
 }
