@@ -13,7 +13,7 @@ import "github.com/Applifier/go-xgboost"
 ## Example
 
 ```go
-// create the train data
+// create the training data
 cols := 3
 rows := 5
 trainData := make([]float32, cols*rows)

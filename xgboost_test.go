@@ -13,7 +13,7 @@ import (
 )
 
 func TestXGBoost(t *testing.T) {
-	// create the train data
+	// create the training data
 	cols := 3
 	rows := 5
 	trainData := make([]float32, cols*rows)
