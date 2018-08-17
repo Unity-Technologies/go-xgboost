@@ -27,8 +27,21 @@ func (booster *XGBooster) SetParam(name string, value string) error {
 	defer C.free(unsafe.Pointer(cvalue))
 
 	res := C.XGBoosterSetParam(booster.handle, cname, cvalue)
-	if int(res) != 0 {
-		return ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteParam set parameters
+func (booster *XGBooster) DeleteParam(name string) error {
+	cname := C.CString(name)
+	defer C.free(unsafe.Pointer(cname))
+
+	res := C.XGBoosterSetParam(booster.handle, cname, nil)
+	if err := checkError(res); err != nil {
+		return err
 	}
 
 	return nil
@@ -37,8 +50,8 @@ func (booster *XGBooster) SetParam(name string, value string) error {
 // UpdateOneIter update the model in one round using dtrain
 func (booster *XGBooster) UpdateOneIter(iter int, mat *XGDMatrix) error {
 	res := C.XGBoosterUpdateOneIter(booster.handle, C.int(iter), mat.handle)
-	if int(res) != 0 {
-		return ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return err
 	}
 
 	return nil
@@ -50,8 +63,8 @@ func (booster *XGBooster) Predict(mat *XGDMatrix, optionMask int, ntreeLimit uin
 	var outResult *C.float
 
 	res := C.XGBoosterPredict(booster.handle, mat.handle, C.int(optionMask), C.uint(ntreeLimit), &outLen, &outResult)
-	if int(res) != 0 {
-		return nil, ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return nil, err
 	}
 
 	var list []float32
@@ -61,6 +74,22 @@ func (booster *XGBooster) Predict(mat *XGDMatrix, optionMask int, ntreeLimit uin
 	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
 
 	return list, nil
+}
+
+// LoadModel load model from existing file
+func (booster *XGBooster) LoadModel(filePath string) error {
+	cfilePath := C.CString(filePath)
+	defer C.free(unsafe.Pointer(cfilePath))
+
+	return checkError(C.XGBoosterLoadModel(booster.handle, cfilePath))
+}
+
+// SaveModel save model into file
+func (booster *XGBooster) SaveModel(filePath string) error {
+	cfilePath := C.CString(filePath)
+	defer C.free(unsafe.Pointer(cfilePath))
+
+	return checkError(C.XGBoosterSaveModel(booster.handle, cfilePath))
 }
 
 func xdgBoosterFinalizer(booster *XGBooster) {
@@ -76,8 +105,8 @@ func XGBoosterCreate(matrix []*XGDMatrix) (*XGBooster, error) {
 
 	var out C.BoosterHandle
 	res := C.XGBoosterCreate((*C.DMatrixHandle)(&handles[0]), C.ulong(len(handles)), &out)
-	if int(res) != 0 {
-		return nil, ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return nil, err
 	}
 
 	booster := &XGBooster{handle: out}

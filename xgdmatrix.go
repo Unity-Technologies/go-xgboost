@@ -29,8 +29,8 @@ func (matrix *XGDMatrix) SetUIntInfo(field string, values []uint32) error {
 	defer C.free(unsafe.Pointer(cstr))
 
 	res := C.XGDMatrixSetUIntInfo(matrix.handle, cstr, (*C.uint)(&values[0]), C.ulong(len(values)))
-	if int(res) != 0 {
-		return ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return err
 	}
 
 	return nil
@@ -42,8 +42,8 @@ func (matrix *XGDMatrix) SetFloatInfo(field string, values []float32) error {
 	defer C.free(unsafe.Pointer(cstr))
 
 	res := C.XGDMatrixSetFloatInfo(matrix.handle, cstr, (*C.float)(&values[0]), C.ulong(len(values)))
-	if int(res) != 0 {
-		return ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return err
 	}
 
 	return nil
@@ -61,8 +61,8 @@ func XGDMatrixCreateFromMat(data []float32, nrows int, ncols int, missing float3
 
 	var out C.DMatrixHandle
 	res := C.XGDMatrixCreateFromMat((*C.float)(&data[0]), C.ulong(nrows), C.ulong(ncols), C.float(missing), &out)
-	if int(res) != 0 {
-		return nil, ErrNotSuccessful
+	if err := checkError(res); err != nil {
+		return nil, err
 	}
 
 	matrix := &XGDMatrix{handle: out, rows: nrows, cols: ncols}
