@@ -50,11 +50,13 @@ func (matrix *XGDMatrix) SetUIntInfo(field string, values []uint32) error {
 	defer C.free(unsafe.Pointer(cstr))
 
 	res := C.XGDMatrixSetUIntInfo(matrix.handle, cstr, (*C.uint)(&values[0]), C.ulong(len(values)))
-	if err := checkError(res); err != nil {
-		return err
-	}
+	return checkError(res)
+}
 
-	return nil
+// SetGroup set label of the training matrix
+func (matrix *XGDMatrix) SetGroup(group ...uint32) error {
+	res := C.XGDMatrixSetGroup(matrix.handle, (*C.uint)(&group[0]), C.ulong(len(group)))
+	return checkError(res)
 }
 
 // SetFloatInfo set float vector to a content in info
