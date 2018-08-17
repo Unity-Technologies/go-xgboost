@@ -146,11 +146,16 @@ func ExampleXGBoost() {
 		trainLabels[i] = float32(1 + i*i*i)
 	}
 
+	// Create XGDMatrix for training data
 	matrix, _ := xgboost.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
+
+	// Set training labels
 	matrix.SetFloatInfo("label", trainLabels)
 
+	// Create booster
 	booster, _ := xgboost.XGBoosterCreate([]*xgboost.XGDMatrix{matrix})
 
+	// Set booster parameters
 	booster.SetParam("booster", "gbtree")
 	booster.SetParam("objective", "reg:linear")
 	booster.SetParam("max_depth", "5")
@@ -172,7 +177,10 @@ func ExampleXGBoost() {
 		}
 	}
 
+	// Create XGDMatrix for test data
 	testmat, _ := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
+
+	// Predict
 	res, _ := booster.Predict(testmat, 0, 0)
 
 	fmt.Printf("%+v\n", res)
