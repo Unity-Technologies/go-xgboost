@@ -98,13 +98,17 @@ func xdgBoosterFinalizer(booster *XGBooster) {
 
 // XGBoosterCreate creates a new booster for a given matrixes
 func XGBoosterCreate(matrix []*XGDMatrix) (*XGBooster, error) {
+	var ptr *C.DMatrixHandle
 	handles := make([]C.DMatrixHandle, len(matrix))
 	for i, matrix := range matrix {
 		handles[i] = matrix.handle
 	}
+	if len(handles) > 0 {
+		ptr = (*C.DMatrixHandle)(&handles[0])
+	}
 
 	var out C.BoosterHandle
-	res := C.XGBoosterCreate((*C.DMatrixHandle)(&handles[0]), C.ulong(len(handles)), &out)
+	res := C.XGBoosterCreate(ptr, C.ulong(len(handles)), &out)
 	if err := checkError(res); err != nil {
 		return nil, err
 	}

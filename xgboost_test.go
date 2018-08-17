@@ -1,7 +1,11 @@
 package xgboost
 
 import (
+	"io/ioutil"
+	"log"
 	"math"
+	"os"
+	"path"
 	"testing"
 )
 
@@ -75,6 +79,44 @@ func TestXGBoost(t *testing.T) {
 
 	// TODO measure actual accuracy
 	totalDiff := 0.0
+	for i, label := range trainLabels {
+		diff := math.Abs(float64(label - res[i]))
+		totalDiff += diff
+	}
+
+	if totalDiff > 6.0 {
+		t.Error("error is too large")
+	}
+
+	dir, err := ioutil.TempDir("", "go-xgboost")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(dir) // clean up
+
+	savePath := path.Join(dir, "testmodel.bst")
+
+	noErr(booster.SaveModel(savePath))
+
+	newBooster, err := XGBoosterCreate(nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	noErr(newBooster.LoadModel(savePath))
+
+	testmat2, err := XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, err = newBooster.Predict(testmat2, 0, 0)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// TODO measure actual accuracy
+	totalDiff = 0.0
 	for i, label := range trainLabels {
 		diff := math.Abs(float64(label - res[i]))
 		totalDiff += diff
