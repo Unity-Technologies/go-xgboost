@@ -1,4 +1,4 @@
-package xgboost
+package xgboost_test
 
 import (
 	"fmt"
@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 	"testing"
+
+	"github.com/Applifier/go-xgboost"
 )
 
 func TestXGBoost(t *testing.T) {
@@ -26,7 +28,7 @@ func TestXGBoost(t *testing.T) {
 		trainLabels[i] = float32(1 + i*i*i)
 	}
 
-	matrix, err := XGDMatrixCreateFromMat(trainData, rows, cols, -1)
+	matrix, err := xgboost.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,7 +38,7 @@ func TestXGBoost(t *testing.T) {
 		t.Error(err)
 	}
 
-	booster, err := XGBoosterCreate([]*XGDMatrix{matrix})
+	booster, err := xgboost.XGBoosterCreate([]*xgboost.XGDMatrix{matrix})
 	if err != nil {
 		t.Error(err)
 	}
@@ -68,7 +70,7 @@ func TestXGBoost(t *testing.T) {
 		}
 	}
 
-	testmat, err := XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat, err := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -99,14 +101,14 @@ func TestXGBoost(t *testing.T) {
 
 	noErr(booster.SaveModel(savePath))
 
-	newBooster, err := XGBoosterCreate(nil)
+	newBooster, err := xgboost.XGBoosterCreate(nil)
 	if err != nil {
 		t.Error(err)
 	}
 
 	noErr(newBooster.LoadModel(savePath))
 
-	testmat2, err := XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat2, err := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -144,10 +146,10 @@ func ExampleXGBoost() {
 		trainLabels[i] = float32(1 + i*i*i)
 	}
 
-	matrix, _ := XGDMatrixCreateFromMat(trainData, rows, cols, -1)
+	matrix, _ := xgboost.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
 	matrix.SetFloatInfo("label", trainLabels)
 
-	booster, _ := XGBoosterCreate([]*XGDMatrix{matrix})
+	booster, _ := xgboost.XGBoosterCreate([]*xgboost.XGDMatrix{matrix})
 
 	booster.SetParam("booster", "gbtree")
 	booster.SetParam("objective", "reg:linear")
@@ -170,7 +172,7 @@ func ExampleXGBoost() {
 		}
 	}
 
-	testmat, _ := XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat, _ := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	res, _ := booster.Predict(testmat, 0, 0)
 
 	fmt.Printf("%+v\n", res)
