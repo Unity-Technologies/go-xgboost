@@ -9,6 +9,7 @@ package xgboost
 import "C"
 import (
 	"errors"
+	"reflect"
 	"runtime"
 	"unsafe"
 )
@@ -21,6 +22,26 @@ type XGDMatrix struct {
 	handle C.DMatrixHandle
 	cols   int
 	rows   int
+}
+
+// NumRow get number of rows.
+func (matrix *XGDMatrix) NumRow() (uint32, error) {
+	var count C.ulong
+	if err := checkError(C.XGDMatrixNumRow(matrix.handle, &count)); err != nil {
+		return 0, err
+	}
+
+	return uint32(count), nil
+}
+
+// NumCol get number of cols.
+func (matrix *XGDMatrix) NumCol() (uint32, error) {
+	var count C.ulong
+	if err := checkError(C.XGDMatrixNumCol(matrix.handle, &count)); err != nil {
+		return 0, err
+	}
+
+	return uint32(count), nil
 }
 
 // SetUIntInfo set uint32 vector to a content in info
@@ -47,6 +68,48 @@ func (matrix *XGDMatrix) SetFloatInfo(field string, values []float32) error {
 	}
 
 	return nil
+}
+
+// GetFloatInfo get float info vector from matrix
+func (matrix *XGDMatrix) GetFloatInfo(field string) ([]float32, error) {
+	cstr := C.CString(field)
+	defer C.free(unsafe.Pointer(cstr))
+
+	var outLen C.ulong
+	var outResult *C.float
+
+	if err := checkError(C.XGDMatrixGetFloatInfo(matrix.handle, cstr, &outLen, &outResult)); err != nil {
+		return nil, err
+	}
+
+	var list []float32
+	sliceHeader := (*reflect.SliceHeader)((unsafe.Pointer(&list)))
+	sliceHeader.Cap = int(outLen)
+	sliceHeader.Len = int(outLen)
+	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
+
+	return list, nil
+}
+
+// GetUIntInfo get uint32 info vector from matrix
+func (matrix *XGDMatrix) GetUIntInfo(field string) ([]uint32, error) {
+	cstr := C.CString(field)
+	defer C.free(unsafe.Pointer(cstr))
+
+	var outLen C.ulong
+	var outResult *C.uint
+
+	if err := checkError(C.XGDMatrixGetUIntInfo(matrix.handle, cstr, &outLen, &outResult)); err != nil {
+		return nil, err
+	}
+
+	var list []uint32
+	sliceHeader := (*reflect.SliceHeader)((unsafe.Pointer(&list)))
+	sliceHeader.Cap = int(outLen)
+	sliceHeader.Len = int(outLen)
+	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
+
+	return list, nil
 }
 
 func xdgMatrixFinalizer(mat *XGDMatrix) {
