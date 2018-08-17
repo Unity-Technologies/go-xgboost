@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Applifier/go-xgboost.svg?token=jeWt6weUpeDp6aNSSaST&branch=master)](https://travis-ci.com/Applifier/go-xgboost)
+[![Build Status](https://travis-ci.org/Applifier/go-xgboost.svg?branch=master)](https://travis-ci.org/Applifier/go-xgboost)
 
 # go-xgboost
 
