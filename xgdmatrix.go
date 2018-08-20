@@ -50,12 +50,15 @@ func (matrix *XGDMatrix) SetUIntInfo(field string, values []uint32) error {
 	defer C.free(unsafe.Pointer(cstr))
 
 	res := C.XGDMatrixSetUIntInfo(matrix.handle, cstr, (*C.uint)(&values[0]), C.ulong(len(values)))
+
+	runtime.KeepAlive(values)
 	return checkError(res)
 }
 
 // SetGroup set label of the training matrix
 func (matrix *XGDMatrix) SetGroup(group ...uint32) error {
 	res := C.XGDMatrixSetGroup(matrix.handle, (*C.uint)(&group[0]), C.ulong(len(group)))
+	runtime.KeepAlive(group)
 	return checkError(res)
 }
 
@@ -68,6 +71,7 @@ func (matrix *XGDMatrix) SetFloatInfo(field string, values []float32) error {
 	if err := checkError(res); err != nil {
 		return err
 	}
+	runtime.KeepAlive(values)
 
 	return nil
 }
@@ -132,6 +136,8 @@ func XGDMatrixCreateFromMat(data []float32, nrows int, ncols int, missing float3
 
 	matrix := &XGDMatrix{handle: out, rows: nrows, cols: ncols}
 	runtime.SetFinalizer(matrix, xdgMatrixFinalizer)
+
+	runtime.KeepAlive(data)
 
 	return matrix, nil
 }
