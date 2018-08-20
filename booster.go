@@ -1,6 +1,7 @@
 package xgboost
 
 import (
+	"context"
 	"errors"
 	"runtime"
 
@@ -23,6 +24,7 @@ func (fsm FloatSliceVector) Data() (data []float32, rowCount, columnCount int) {
 // Predictor interface for xgboost predictors
 type Predictor interface {
 	Predict(input Matrix) ([]float32, error)
+	Close(ctx context.Context) error
 }
 
 // NewPredictor returns a new predictor based on given model path, worker count, option mask, ntree_limit and missing value indicator
@@ -105,4 +107,9 @@ func (mb *multiBooster) Predict(input Matrix) ([]float32, error) {
 
 	result := <-resChan
 	return result.result, result.err
+}
+
+func (mb *multiBooster) Close(ctx context.Context) error {
+	close(mb.reqChan)
+	return nil
 }
