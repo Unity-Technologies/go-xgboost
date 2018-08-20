@@ -1,4 +1,4 @@
-package xgboost
+package core
 
 /*
 #cgo LDFLAGS: -lxgboost

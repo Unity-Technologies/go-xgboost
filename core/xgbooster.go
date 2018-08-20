@@ -1,4 +1,4 @@
-package xgboost
+package core
 
 /*
 #cgo LDFLAGS: -lxgboost
@@ -73,7 +73,7 @@ func (booster *XGBooster) Predict(mat *XGDMatrix, optionMask int, ntreeLimit uin
 	sliceHeader.Len = int(outLen)
 	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
 
-	return list, nil
+	return copyFloat32Slice(list), nil
 }
 
 // LoadModel load model from existing file

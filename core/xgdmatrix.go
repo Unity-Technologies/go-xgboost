@@ -1,4 +1,4 @@
-package xgboost
+package core
 
 /*
 #cgo LDFLAGS: -lxgboost
@@ -94,7 +94,7 @@ func (matrix *XGDMatrix) GetFloatInfo(field string) ([]float32, error) {
 	sliceHeader.Len = int(outLen)
 	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
 
-	return list, nil
+	return copyFloat32Slice(list), nil
 }
 
 // GetUIntInfo get uint32 info vector from matrix
@@ -115,7 +115,7 @@ func (matrix *XGDMatrix) GetUIntInfo(field string) ([]uint32, error) {
 	sliceHeader.Len = int(outLen)
 	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
 
-	return list, nil
+	return copyUint32Slice(list), nil
 }
 
 func xdgMatrixFinalizer(mat *XGDMatrix) {
