@@ -1,6 +1,7 @@
 package xgboost
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -93,6 +94,7 @@ func TestBooster(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer predictor.Close(context.TODO())
 
 	cols := 3
 	rows := 5
@@ -126,6 +128,7 @@ func BenchmarkBooster(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
+	defer predictor.Close(context.TODO())
 
 	testData := []float32{1, 2, 3}
 
@@ -150,6 +153,7 @@ func BenchmarkBoosterParallel(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
+	defer predictor.Close(context.TODO())
 
 	testData := []float32{1, 2, 3}
 
@@ -175,6 +179,7 @@ func ExampleBooster() {
 
 	// Create predictor and define the number of workers (and other settings)
 	predictor, _ := NewPredictor(modelPath, runtime.NumCPU(), 0, 0, -1)
+	defer predictor.Close(context.TODO())
 
 	res, _ := predictor.Predict(FloatSliceVector([]float32{1, 2, 3}))
 	fmt.Printf("Results: %+v\n", res)
