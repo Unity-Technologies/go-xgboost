@@ -73,6 +73,8 @@ func (booster *XGBooster) Predict(mat *XGDMatrix, optionMask int, ntreeLimit uin
 	sliceHeader.Len = int(outLen)
 	sliceHeader.Data = uintptr(unsafe.Pointer(outResult))
 
+	runtime.KeepAlive(mat)
+
 	return copyFloat32Slice(list), nil
 }
 
