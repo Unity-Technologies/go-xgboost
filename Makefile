@@ -3,5 +3,5 @@ build-docker:
 .PHONY: build-docker
 
 test:
-	./scripts/docker_run.sh go test ./...
+	./scripts/docker_run.sh go test ./... -bench=.
 .PHONY: test

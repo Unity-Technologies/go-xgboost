@@ -1,7 +1,6 @@
-package xgboost
+package core
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -48,6 +47,4 @@ func TestXGDMatrix(t *testing.T) {
 	if colCount != 2 {
 		t.Error("Wrong col count returned")
 	}
-
-	fmt.Printf("%+v\n", data)
 }

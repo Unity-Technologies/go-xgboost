@@ -1,4 +1,4 @@
-package xgboost_test
+package core_test
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/Applifier/go-xgboost"
+	"github.com/Applifier/go-xgboost/core"
 )
 
 func TestXGBoost(t *testing.T) {
@@ -28,7 +28,7 @@ func TestXGBoost(t *testing.T) {
 		trainLabels[i] = float32(1 + i*i*i)
 	}
 
-	matrix, err := xgboost.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
+	matrix, err := core.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,7 +38,7 @@ func TestXGBoost(t *testing.T) {
 		t.Error(err)
 	}
 
-	booster, err := xgboost.XGBoosterCreate([]*xgboost.XGDMatrix{matrix})
+	booster, err := core.XGBoosterCreate([]*core.XGDMatrix{matrix})
 	if err != nil {
 		t.Error(err)
 	}
@@ -57,6 +57,7 @@ func TestXGBoost(t *testing.T) {
 	noErr(booster.SetParam("subsample", "0.5"))
 	noErr(booster.SetParam("colsample_bytree", "1"))
 	noErr(booster.SetParam("num_parallel_tree", "1"))
+	noErr(booster.SetParam("silent", "1"))
 
 	// perform 200 learning iterations
 	for iter := 0; iter < 200; iter++ {
@@ -70,7 +71,7 @@ func TestXGBoost(t *testing.T) {
 		}
 	}
 
-	testmat, err := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat, err := core.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -101,14 +102,14 @@ func TestXGBoost(t *testing.T) {
 
 	noErr(booster.SaveModel(savePath))
 
-	newBooster, err := xgboost.XGBoosterCreate(nil)
+	newBooster, err := core.XGBoosterCreate(nil)
 	if err != nil {
 		t.Error(err)
 	}
 
 	noErr(newBooster.LoadModel(savePath))
 
-	testmat2, err := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat2, err := core.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 	if err != nil {
 		t.Error(err)
 	}
@@ -147,13 +148,13 @@ func ExampleXGBoost() {
 	}
 
 	// Create XGDMatrix for training data
-	matrix, _ := xgboost.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
+	matrix, _ := core.XGDMatrixCreateFromMat(trainData, rows, cols, -1)
 
 	// Set training labels
 	matrix.SetFloatInfo("label", trainLabels)
 
 	// Create booster
-	booster, _ := xgboost.XGBoosterCreate([]*xgboost.XGDMatrix{matrix})
+	booster, _ := core.XGBoosterCreate([]*core.XGDMatrix{matrix})
 
 	// Set booster parameters
 	booster.SetParam("booster", "gbtree")
@@ -164,6 +165,7 @@ func ExampleXGBoost() {
 	booster.SetParam("subsample", "0.5")
 	booster.SetParam("colsample_bytree", "1")
 	booster.SetParam("num_parallel_tree", "1")
+	booster.SetParam("silent", "1")
 
 	// perform 200 learning iterations
 	for iter := 0; iter < 200; iter++ {
@@ -178,7 +180,7 @@ func ExampleXGBoost() {
 	}
 
 	// Create XGDMatrix for test data
-	testmat, _ := xgboost.XGDMatrixCreateFromMat(testData, rows, cols, -1)
+	testmat, _ := core.XGDMatrixCreateFromMat(testData, rows, cols, -1)
 
 	// Predict
 	res, _ := booster.Predict(testmat, 0, 0)
