@@ -1,6 +1,7 @@
+WORK IN PROGRESS... USE AT OWN RISK :-)
+
 [![Build Status](https://travis-ci.org/Applifier/go-core.svg?branch=master)](https://travis-ci.org/Applifier/go-xgboost)
 [![GoDoc](https://godoc.org/github.com/Applifier/go-xgboost?status.svg)](http://godoc.org/github.com/Applifier/go-xgboost)
-
 
 # go-xgboost
 
