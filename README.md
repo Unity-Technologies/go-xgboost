@@ -26,3 +26,7 @@ fmt.Printf("Results: %+v\n", res)
 // output: Results: [1.08002]
 
 ```
+
+## License
+
+[MIT](https://github.com/Applifier/go-xgboost/blob/master/LICENSE)
