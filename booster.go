@@ -1,6 +1,7 @@
 package xgboost
 
 import (
+	"errors"
 	"runtime"
 
 	"github.com/Applifier/go-xgboost/core"
@@ -26,6 +27,10 @@ type Predictor interface {
 
 // NewPredictor returns a new predictor based on given model path, worker count, option mask, ntree_limit and missing value indicator
 func NewPredictor(xboostSavedModelPath string, workerCount int, optionMask int, nTreeLimit uint, missingValue float32) (Predictor, error) {
+	if workerCount <= 0 {
+		return nil, errors.New("worker count needs to be larger than zero")
+	}
+
 	requestChan := make(chan multiBoosterRequest)
 	initErrors := make(chan error)
 	defer close(initErrors)
