@@ -186,5 +186,5 @@ func ExampleXGBoost() {
 	res, _ := booster.Predict(testmat, 0, 0)
 
 	fmt.Printf("%+v\n", res)
-	// output: [1.08002 2.5686886 7.86032 29.923136 63.76062]
+	// output: [1.0631807 2.4375393 8.3054695 30.843433 63.097855]
 }

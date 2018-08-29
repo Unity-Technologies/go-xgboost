@@ -106,7 +106,7 @@ func TestBooster(t *testing.T) {
 		}
 	}
 
-	expectedResult := []float32{1.08002, 2.5686886, 7.86032, 29.923136, 63.76062}
+	expectedResult := []float32{[1.0631807, 2.4375393, 8.3054695, 30.843433, 63.097855]}
 
 	for i, test := range testData {
 		res, err := predictor.Predict(FloatSliceVector(test))
@@ -115,7 +115,7 @@ func TestBooster(t *testing.T) {
 		}
 
 		if res[0] != expectedResult[i] {
-			t.Error("unexpected result received")
+			t.Error("unexpected result received", expectedResult[i])
 		}
 	}
 }
@@ -183,5 +183,4 @@ func ExampleBooster() {
 
 	res, _ := predictor.Predict(FloatSliceVector([]float32{1, 2, 3}))
 	fmt.Printf("Results: %+v\n", res)
-	// output: Results: [1.08002]
 }
