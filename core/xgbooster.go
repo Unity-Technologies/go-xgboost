@@ -59,7 +59,7 @@ func (booster *XGBooster) UpdateOneIter(iter int, mat *XGDMatrix) error {
 
 // Predict make prediction based on dmat
 func (booster *XGBooster) Predict(mat *XGDMatrix, optionMask int, ntreeLimit uint) ([]float32, error) {
-	var outLen C.ulong
+	var outLen C.bst_ulong
 	var outResult *C.float
 
 	res := C.XGBoosterPredict(booster.handle, mat.handle, C.int(optionMask), C.uint(ntreeLimit), &outLen, &outResult)
@@ -110,7 +110,7 @@ func XGBoosterCreate(matrix []*XGDMatrix) (*XGBooster, error) {
 	}
 
 	var out C.BoosterHandle
-	res := C.XGBoosterCreate(ptr, C.ulong(len(handles)), &out)
+	res := C.XGBoosterCreate(ptr, C.bst_ulong(len(handles)), &out)
 	if err := checkError(res); err != nil {
 		return nil, err
 	}
