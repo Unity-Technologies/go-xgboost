@@ -183,4 +183,5 @@ func ExampleBooster() {
 
 	res, _ := predictor.Predict(FloatSliceVector([]float32{1, 2, 3}))
 	fmt.Printf("Results: %+v\n", res)
+	// output: Results: [1.0631807]
 }
