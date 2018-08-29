@@ -106,7 +106,7 @@ func TestBooster(t *testing.T) {
 		}
 	}
 
-	expectedResult := []float32{[1.0631807, 2.4375393, 8.3054695, 30.843433, 63.097855]}
+	expectedResult := []float32{1.0631807, 2.4375393, 8.3054695, 30.843433, 63.097855}
 
 	for i, test := range testData {
 		res, err := predictor.Predict(FloatSliceVector(test))
