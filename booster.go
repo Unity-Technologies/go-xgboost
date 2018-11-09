@@ -34,8 +34,7 @@ func NewPredictor(xboostSavedModelPath string, workerCount int, optionMask int, 
 	}
 
 	requestChan := make(chan multiBoosterRequest)
-	initErrors := make(chan error)
-	defer close(initErrors)
+	initErrors := make(chan error, workerCount)
 
 	for i := 0; i < workerCount; i++ {
 		go func() {
